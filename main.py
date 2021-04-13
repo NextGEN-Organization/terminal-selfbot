@@ -6,6 +6,7 @@ from fake_useragent import UserAgent
 from config import local_config as cfg
 from commands.general_commands import GeneralCommands as gc
 from commands.terminal_commands import TerminalCommands as tc
+from commands.google_drive_commands import GoogleDriveCommands as gdc
 
 ua = UserAgent()
 
@@ -19,13 +20,18 @@ class MyClient(discord.Client):
         self.token = token
         self.gc = gc(token, **kwargs)
         self.tc = tc()
+        self.gdc = gdc(cfg.prefix, self)
 
     
     async def on_message(self, message):
         if (message.author.id in cfg.authUserList) and (message.content.startswith(cfg.prefix)):
             switch = {
                 "help": self.gc.helpMsg,
-                "test": self.tc.runProcess
+                "run": self.tc.newRunProcess,
+                "input": self.tc.inputToProcess,
+                "search": self.gdc.search,
+                "fileinfo": self.gdc.getFileInfo,
+                "grab": self.gdc.sendFile
             }
             await switch.get(message.content.split(' ')[0].replace(cfg.prefix, ""), self.gc.errorMsg)(message)
 

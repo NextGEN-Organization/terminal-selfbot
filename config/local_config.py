@@ -1,6 +1,5 @@
 import ujson
 
-
 with open("config/config.json", "r") as cfg_file:
     settings = ujson.load(cfg_file)
 
