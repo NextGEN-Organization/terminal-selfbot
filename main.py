@@ -26,12 +26,20 @@ class MyClient(discord.Client):
     async def on_message(self, message):
         if (message.author.id in cfg.authUserList) and (message.content.startswith(cfg.prefix)):
             switch = {
+                # general commands
                 "help": self.gc.helpMsg,
-                "run": self.tc.newRunProcess,
-                "input": self.tc.inputToProcess,
+
+                # terminal commands
+                "run": self.tc.createTerminal,
+                "input": self.tc.inputToTerminal,
+                "tinfo": self.tc.monitorTerminals,
+                "lastout": self.tc.get_current_stdout,
+
+                # google drive commands
                 "search": self.gdc.search,
+                "grab": self.gdc.sendFile,
                 "fileinfo": self.gdc.getFileInfo,
-                "grab": self.gdc.sendFile
+                
             }
             await switch.get(message.content.split(' ')[0].replace(cfg.prefix, ""), self.gc.errorMsg)(message)
 
